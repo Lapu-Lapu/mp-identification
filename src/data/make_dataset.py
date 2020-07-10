@@ -21,45 +21,45 @@ from src.data.globs import (
 
 @click.command()
 @click.argument('command', type=click.STRING)
-@click.argument('dataset', type=click.STRING)
 @click.argument('input_filepath', type=click.Path(exists=True))
 @click.argument('output_filepath', type=click.Path())
-def main(command, dataset, input_filepath, output_filepath):
+def main(command, input_filepath, output_filepath):
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from ' + dataset + ' raw data')
-    if dataset == 'exp1':
-        if command == 'load':
-            D_exp1 = load_exp1_data(
-                os.path.join(input_filepath, 'psychophysics'),
-                output_filepath
-            )
-        elif command == 'addscores':
-            add_scores_to_exp1_data(input_filepath, output_filepath)
-        else:
-            raise UserError('Command: ' + command + ' not known.')
-    elif dataset == 'exp2':
-        if command == 'load':
-            D_exp2 = load_exp2_data(
-                os.path.join(input_filepath, 'psychophysics'),
-                output_filepath
-            )
-        elif command == 'addscores':
-            add_scores_to_exp2_data(input_filepath, output_filepath)
-        else:
-            raise UserError('Command: ' + command + ' not known.')
+    # logger.info('making final data set from ' + dataset + ' raw data')
+    logger.info(command)
+    if command == 'exp1':
+        func = load_exp1_data
+    elif command == 'exp2':
+        func = load_exp2_data
+    elif command == 'scores1':
+        func = load_scores1
+    elif command == 'scores2':
+        func = load_scores2
+    elif command == 'join':
+        func = join_everything
     else:
         raise UserError('Dataset ' + dataset + ' not known.')
+    func(input_filepath, output_filepath)
 
 
-class UserError(Exception):
-    pass
+def join_everything(input_filepath, output_filepath):
+    data_exp1 = pd.read_json(os.path.join(input_filepath, 'temp_exp1.json'))
+    data_exp2 = pd.read_json(os.path.join(input_filepath, 'temp_exp2.json'))
+    all_data = pd.concat((data_exp1, data_exp2), sort=False,
+                         ignore_index=True)
+
+    all_data['model_id'] = all_data.apply(modelstr, axis=1)
+
+    out_file = os.path.join(output_filepath, 'joint_results.json')
+    all_data.to_json(out_file)
+    return
 
 
 def load_exp1_data(input_filepath, output_filepath) -> pd.DataFrame:
-    input_filepath += os.sep + 'exp1' + os.sep
+    input_filepath = os.path.join(input_filepath, 'psychophysics', 'exp1', '')
     files = [input_filepath + f
              for f in os.listdir(input_filepath)
              if f[-3:] == 'csv']
@@ -76,7 +76,7 @@ def load_exp1_data(input_filepath, output_filepath) -> pd.DataFrame:
     D.to_json(os.path.join(output_filepath, 'temp_exp1.json'))
 
 
-def add_scores_to_exp1_data(input_filepath, output_filepath):
+def load_scores1(input_filepath, output_filepath):
     scores_exp1 = load_scores_exp1(
         os.path.join(input_filepath, 'scores', 'ELBO_MSE_table_nogaps.csv')
     )
@@ -84,7 +84,7 @@ def add_scores_to_exp1_data(input_filepath, output_filepath):
 
 
 def load_exp2_data(input_filepath, output_filepath):
-    input_filepath += os.sep + 'exp2' + os.sep
+    input_filepath = os.path.join(input_filepath, 'psychophysics', 'exp2', '')
     pattern = os.path.join(input_filepath, '*.csv')
     fps = glob.glob(pattern)
     data_exp2 = load_exp2(fps)
@@ -95,7 +95,7 @@ def load_exp2_data(input_filepath, output_filepath):
     return
 
 
-def add_scores_to_exp2_data(input_filepath, output_filepath):
+def load_scores2(input_filepath, output_filepath):
     scores_exp2 = pd.read_json(
         os.path.join(input_filepath, 'scores', 'modelscores_exp2.json')
     )
@@ -104,16 +104,6 @@ def add_scores_to_exp2_data(input_filepath, output_filepath):
                       'elbo', 'mode', 'timing'], axis=1, inplace=True)
     scores_exp2.to_json(os.path.join(output_filepath, 'scores_exp2.json'))
     return
-
-    #####
-    all_data = pd.concat((data_exp1, data_exp2), sort=False,
-                         ignore_index=True)
-
-    all_data['model_id'] = all_data.apply(modelstr, axis=1)
-
-    out_file = 'data/joint_results.json'
-    all_data.to_json(out_file)
-    print(f'Written {out_file}')
 
 
 def load_scores_exp1(fn):
@@ -284,6 +274,25 @@ def remove_brackets(s):
         return int(s)
     except ValueError:
         return s
+
+
+def modelstr(row: pd.Series) -> str:
+    fn = row.mov_file_generated.split('_final')[0]
+    if row.expName == 'main':
+        return fn
+    elif row.expName == 'follow-up':
+        id_dict = parse_filename(fn)
+        s = row.mp_type + '_'
+        mp = model[row.mp_type]
+        for p in mp['params']:
+            s += f'{p}({id_dict[p]})-'
+        return s[:-1]
+    else:
+        raise NameError(f'{row.expName} unknown')
+
+
+class UserError(Exception):
+    pass
 
 
 if __name__ == '__main__':

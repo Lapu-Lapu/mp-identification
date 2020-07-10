@@ -9,6 +9,13 @@ How to use this module
 
     `conda env create -f environment.lock.yaml --force`
 
+2. Make dataset from raw data
+    1. `src/data/make_dataset.py exp1 data/raw data/interim`
+    2. `src/data/make_dataset.py exp2 data/raw data/interim`
+    3. `src/data/make_dataset.py scores1 data/raw data/interim`
+    4. `src/data/make_dataset.py scores2 data/raw data/interim`
+    5. `src/data/make_dataset.py join data/interim data/processed`
+
 Raw Data
 ----
 
