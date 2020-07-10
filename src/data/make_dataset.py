@@ -28,21 +28,15 @@ def main(command, input_filepath, output_filepath):
         cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    # logger.info('making final data set from ' + dataset + ' raw data')
     logger.info(command)
-    if command == 'exp1':
-        func = load_exp1_data
-    elif command == 'exp2':
-        func = load_exp2_data
-    elif command == 'scores1':
-        func = load_scores1
-    elif command == 'scores2':
-        func = load_scores2
-    elif command == 'join':
-        func = join_everything
-    else:
-        raise UserError('Dataset ' + dataset + ' not known.')
-    func(input_filepath, output_filepath)
+    funcd = {
+        'exp1': load_exp1_data,
+        'exp2': load_exp2_data,
+        'scores1': load_scores1,
+        'scores2': load_scores2,
+        'join': join_everything
+    }
+    funcd[command](input_filepath, output_filepath)
 
 
 def join_everything(input_filepath, output_filepath):
