@@ -13,11 +13,11 @@ import glob
 from itertools import chain
 
 from src.data.globs import (
-    model,
     exp1_columns_raw,
     exp2_columns_raw
 )
 
+from src.models.globs import model
 
 @click.command()
 @click.argument('command', type=click.STRING)
@@ -49,7 +49,6 @@ def join_everything(input_filepath, output_filepath):
 
     out_file = os.path.join(output_filepath, 'joint_results.json')
     all_data.to_json(out_file)
-    return
 
 
 def load_exp1_data(input_filepath, output_filepath) -> pd.DataFrame:
@@ -285,8 +284,11 @@ def modelstr(row: pd.Series) -> str:
         raise NameError(f'{row.expName} unknown')
 
 
-class UserError(Exception):
-    pass
+def model_id(row):
+    s = row.mp_type + '_'
+    for p in model[row.mp_type]['params']:
+        s += f'{p}({int(row[p])})-'
+    return s[:-1]
 
 
 if __name__ == '__main__':

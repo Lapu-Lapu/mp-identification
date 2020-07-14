@@ -8,6 +8,7 @@ How to use this module
 1. Make sure to replicate the python environment using conda:
 
     `conda env create -f environment.lock.yaml --force`
+    `conda activate mp_perception2`
 
 2. Make dataset from raw data
     1. `src/data/make_dataset.py exp1 data/raw data/interim`
@@ -15,6 +16,12 @@ How to use this module
     3. `src/data/make_dataset.py scores1 data/raw data/interim`
     4. `src/data/make_dataset.py scores2 data/raw data/interim`
     5. `src/data/make_dataset.py join data/interim data/processed`
+
+3. (optional) Setup jupyter notebook: If you have installed jupyter notebook (or lab)
+    you can use ipykernel to make the virtual environment accessible:
+    `python -m ipykernel install --user --name mp_perception2`
+    or install jupyter notebook in the environment.
+    `TODO`
 
 Raw Data
 ----
