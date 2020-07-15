@@ -30,12 +30,14 @@ D = D[D.mp_type != 'catchtrial']
 
 # Save result for logistic regression
 scores_exp = []
-for i in [1, 2]:
-    scr = pd.read_json(f'data/interim/scores_exp{i}.json')
+for i, k in enumerate(exp):
+    scr = pd.read_json(f'data/interim/scores_exp{i+1}.json')
     scr['model_id'] = scr.apply(model_id, axis=1)
     scr.loc[scr.model_id == 'mapgpdm', 'model_id'] = 'map_gpdm'
     scr.loc[scr.model_id == 'mapcgpdm', 'model_id'] = 'map_cgpdm'
     scr = scr.set_index('model_id', verify_integrity=True)
+    cf = D[D.expName==k].groupby('model_id').y.mean()
+    scr = pd.concat([scr, cf.rename('confusion_rate')], axis=1, join='inner')
     scores_exp += [scr]
 scores = pd.concat(scores_exp, sort=False).reset_index()
 scores.to_json('data/processed/joint_scores.json')

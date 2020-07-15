@@ -4,10 +4,10 @@ TMP = {'params': ['numprim'],
        'scores': ['MSE', 'ELBO']}
 DMP = {'params': ['npsi'],
        'scores': ['MSE']}
-VCGPDM = dict(params=['dyn', 'lvm'],
-              scores=['MSE', 'ELBO', 'dyn_elbo', 'lvm_elbo'])
+VCGPDM = {'params': ['dyn', 'lvm'],
+          'scores': ['MSE', 'ELBO', 'dyn_elbo', 'lvm_elbo']}
 MAPGPDM = {'params': [],
-           'scores': ['MSE', 'ELBO']}
+           'scores': ['MSE']}
 CATCH = {'params': [], 'scores': []}
 model = {'vcgpdm': VCGPDM,
          'vgpdm': VCGPDM,
