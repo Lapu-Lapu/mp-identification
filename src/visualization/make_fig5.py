@@ -82,8 +82,8 @@ def get_best_weights(data, idx_labels):
 
 
 results = pd.read_pickle('models/logistic_regression_model.pkl')
-raw_results = pd.read_pickle('models/logistic_regression_model_raw.pkl')
 # raw_results = pd.read_json('models/logistic_regression_model_raw.json')
+raw_results = pd.read_pickle('models/logistic_regression_model_raw.pkl')
 Df = pd.read_json('data/processed/preprocessed_data.json')
 scores = pd.read_json('data/processed/joint_scores.json').set_index('model_id')
 
@@ -137,4 +137,3 @@ ax[0, 0].legend(['Exp. 1', 'Exp. 2', 'predicted'])
 ax[1, 1].set_visible(False)
 plt.tight_layout()
 plt.savefig('reports/figures/fig5.pdf')
-plt.show()
