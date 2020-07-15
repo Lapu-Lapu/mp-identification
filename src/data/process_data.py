@@ -37,6 +37,8 @@ for i in [1, 2]:
     scr.loc[scr.model_id == 'mapcgpdm', 'model_id'] = 'map_cgpdm'
     scr = scr.set_index('model_id', verify_integrity=True)
     scores_exp += [scr]
+scores = pd.concat(scores_exp, sort=False).reset_index()
+scores.to_json('data/processed/joint_scores.json')
 
 d_exp = {s: D[D.expName == s] for s in exp}
 reg_data = []

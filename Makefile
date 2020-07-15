@@ -25,10 +25,16 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
+fig2: reports/figures/fig2.pdf
+
+reports/figures/fig2.pdf: data/processed/preprocessed_data.json\
+	src/visualization/make_fig2.py
+	$(PYTHON_INTERPRETER) src/visualization/make_fig2.py
+
 ## Make Dataset
 data: data/processed/preprocessed_data.json
 
-data/processed/preprocessed_data.json: join
+data/processed/preprocessed_data.json: data/processed/joint_results.json
 	$(PYTHON_INTERPRETER) src/data/process_data.py
 
 join: data/processed/joint_results.json
