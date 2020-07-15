@@ -29,9 +29,15 @@ fig2: reports/figures/fig2.pdf
 
 fig3: reports/figures/fig3.pdf
 
+fig4: reports/figures/fig4.pdf
+
 reports/figures/fig3.pdf: data/processed/preprocessed_data.json\
-	src/visualization/make_fig3.py
-	$(PYTHON_INTERPRETER) src/visualization/make_fig3.py
+	src/visualization/make_fig3and4.py
+	$(PYTHON_INTERPRETER) src/visualization/make_fig3and4.py
+
+reports/figures/fig4.pdf: data/processed/preprocessed_data.json\
+	src/visualization/make_fig3and4.py
+	$(PYTHON_INTERPRETER) src/visualization/make_fig3and4.py
 
 reports/figures/fig2.pdf: data/processed/preprocessed_data.json\
 	src/visualization/make_fig2.py
