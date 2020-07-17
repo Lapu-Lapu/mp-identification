@@ -150,7 +150,6 @@ for mp_type in mp_types:
 
 raw_results = pd.DataFrame(results).T
 raw_results.index = raw_results.index.set_names(['mp_type', 'score', 'n'])
-# raw_results.to_json('models/logistic_regression_model_raw.json')
 raw_results.to_pickle('models/logistic_regression_model_raw.pkl')
 
 # aggregate over crossvalidations

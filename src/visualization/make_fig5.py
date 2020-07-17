@@ -81,59 +81,59 @@ def get_best_weights(data, idx_labels):
     return d.loc[bidx, ['w0', 'w1', 'w2', 'test_cost']]
 
 
-results = pd.read_pickle('models/logistic_regression_model.pkl')
-# raw_results = pd.read_json('models/logistic_regression_model_raw.json')
-raw_results = pd.read_pickle('models/logistic_regression_model_raw.pkl')
-Df = pd.read_json('data/processed/preprocessed_data.json')
-scores = pd.read_json('data/processed/joint_scores.json').set_index('model_id')
+if __name__ == '__main__':
+    results = pd.read_pickle('models/logistic_regression_model.pkl')
+    raw_results = pd.read_pickle('models/logistic_regression_model_raw.pkl')
+    Df = pd.read_json('data/processed/preprocessed_data.json')
+    scores = pd.read_json('data/processed/joint_scores.json').set_index('model_id')
 
-m = {
-     ('tmp', 'MSE'):  (0, 0),
-     ('tmp', 'ELBO'): (1, 0),
-     ('dmp', 'MSE'):  (0, 1)
-}
+    m = {
+         ('tmp', 'MSE'):  (0, 0),
+         ('tmp', 'ELBO'): (1, 0),
+         ('dmp', 'MSE'):  (0, 1)
+    }
 
-fig, ax = plt.subplots(ncols=2, nrows=2, sharey='row')
-fig.set_size_inches(8, 5)
+    fig, ax = plt.subplots(ncols=2, nrows=2, sharey='row')
+    fig.set_size_inches(8, 5)
 
-logk_min = results['llr_vconst'].min()
-logk_max = results['llr_vconst'].max()
+    logk_min = results['llr_vconst'].min()
+    logk_max = results['llr_vconst'].max()
 
-mp_types = ['tmp', 'dmp']
-for mp_type in mp_types:
-    mp = model[mp_type]
-    df_scores = scores[scores.mp_type == mp_type]
-    df = Df[Df.mp_type == mp_type]
+    mp_types = ['tmp', 'dmp']
+    for mp_type in mp_types:
+        mp = model[mp_type]
+        df_scores = scores[scores.mp_type == mp_type]
+        df = Df[Df.mp_type == mp_type]
 
-    for score in mp['scores']:
-        # # Test weights TODO: Check selection of weights
-        best_weights = get_best_weights(raw_results, (mp_type, score))
-        best_weights = best_weights[['w0', 'w1', 'w2']]
+        for score in mp['scores']:
+            # # Test weights TODO: Check selection of weights
+            best_weights = get_best_weights(raw_results, (mp_type, score))
+            best_weights = best_weights[['w0', 'w1', 'w2']]
 
-        df_s = df_scores.loc[:, mp['params']+[score, 'confusion_rate']]
-        logk = results.xs((mp_type, score))['llr_vconst']
-        c_val = (logk-logk_min+0.2)/(logk_max-logk_min+0.2)
-        txt_color = (1-c_val, c_val, 0)
+            df_s = df_scores.loc[:, mp['params']+[score, 'confusion_rate']]
+            logk = results.xs((mp_type, score))['llr_vconst']
+            c_val = (logk-logk_min+0.2)/(logk_max-logk_min+0.2)
+            txt_color = (1-c_val, c_val, 0)
 
-        plot_psychometric(mp, df, df_s, best_weights,
-                             ax[m[(mp_type, score)]])
-        # tstr = f'{mp_type}: perceived naturalness and prediction from {score}'
-        tstr = pp[mp_type] + '\n'
-        if m[(mp_type, score)][0] == 0:
-            ax[m[(mp_type, score)]].set_title(tstr)
-        if score == 'MSE':
-            ax[m[(mp_type, score)]].set_xlim(0.001, 0.007)
-        ax[m[(mp_type, score)]].ticklabel_format(style='sci', scilimits=(-2,4), axis='both')
-        ax[m[(mp_type, score)]].grid()
-        ax[m[(mp_type, score)]].annotate(f'ln K: {logk:.1f}', xy=(0.01,
-                                                                  1.05),
-                                         xycoords='axes fraction',
-                                         size=12, color=txt_color)
+            plot_psychometric(mp, df, df_s, best_weights,
+                                 ax[m[(mp_type, score)]])
+            # tstr = f'{mp_type}: perceived naturalness and prediction from {score}'
+            tstr = pp[mp_type] + '\n'
+            if m[(mp_type, score)][0] == 0:
+                ax[m[(mp_type, score)]].set_title(tstr)
+            if score == 'MSE':
+                ax[m[(mp_type, score)]].set_xlim(0.001, 0.007)
+            ax[m[(mp_type, score)]].ticklabel_format(style='sci', scilimits=(-2,4), axis='both')
+            ax[m[(mp_type, score)]].grid()
+            ax[m[(mp_type, score)]].annotate(f'ln K: {logk:.1f}', xy=(0.01,
+                                                                      1.05),
+                                             xycoords='axes fraction',
+                                             size=12, color=txt_color)
 
-        ax[m[(mp_type, score)]].set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
-                                            0.6])
-        ax[m[(mp_type, score)]].get_legend().remove()
-ax[0, 0].legend(['Exp. 1', 'Exp. 2', 'predicted'])
-ax[1, 1].set_visible(False)
-plt.tight_layout()
-plt.savefig('reports/figures/fig5.pdf')
+            ax[m[(mp_type, score)]].set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
+                                                0.6])
+            ax[m[(mp_type, score)]].get_legend().remove()
+    ax[0, 0].legend(['Exp. 1', 'Exp. 2', 'predicted'])
+    ax[1, 1].set_visible(False)
+    plt.tight_layout()
+    plt.savefig('reports/figures/fig5.pdf')

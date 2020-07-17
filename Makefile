@@ -30,7 +30,9 @@ all: fig2 fig3 fig4 fig5# fig6
 regression: models/logistic_regression_model.pkl
 
 models/logistic_regression_model.pkl:\
-	src/models/train_model.py
+	src/models/train_model.py\
+	models/logistic_regression_model_raw.pkl\
+	models/logistic_regression_model.pkl
 	$(PYTHON_INTERPRETER) src/models/train_model.py
 
 fig2: reports/figures/fig2.pdf
@@ -41,7 +43,7 @@ fig4: reports/figures/fig4.pdf
 
 fig5: reports/figures/fig5.pdf models/logistic_regression_model.pkl
 
-# fig6: reports/figures/fig6.pdf models/logistic_regression_model.pkl
+fig6: reports/figures/fig6.pdf models/logistic_regression_model.pkl
 
 reports/figures/fig6.pdf: data/processed/preprocessed_data.json\
 	data/processed/joint_scores.json\
