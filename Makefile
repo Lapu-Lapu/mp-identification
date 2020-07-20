@@ -25,7 +25,7 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
-all: fig2 fig3 fig4 fig5 fig6
+all: fig2 fig3 fig4 fig5 fig6 fig7 fig8
 
 regression: models/logistic_regression_model.pkl
 
