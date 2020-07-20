@@ -22,6 +22,20 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - pip:
+    - autograd==1.3
     - click==7.1.2
+    - cycler==0.10.0
+    - future==0.18.2
+    - kiwisolver==1.2.0
+    - matplotlib==3.3.0
+    - numpy==1.19.0
+    - pandas==1.0.5
+    - pillow==7.2.0
+    - pyparsing==2.4.7
+    - python-dateutil==2.8.1
     - python-dotenv==0.13.0
+    - pytz==2020.1
+    - scipy==1.5.1
+    - seaborn==0.10.1
+    - six==1.15.0
 prefix: /home/benjamin/anaconda3/envs/mp_perception2
