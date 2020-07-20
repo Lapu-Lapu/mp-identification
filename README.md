@@ -1,4 +1,4 @@
-Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.
+Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models
 ==============================
 
 Data and analysis for Knopp, Benjamin, Dmytro Velychko, Johannes Dreibrodt, and Dominik Endres. 2019. “Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.” ACM Trans. Appl. Percept. 16 (3): 15:1–15:18. https://doi.org/10.1145/3355401.
