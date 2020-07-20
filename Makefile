@@ -1,3 +1,13 @@
+#################################################################################
+# GLOBALS                                                                       #
+#################################################################################
+
+PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
+PROFILE = default
+PROJECT_NAME = mp_identification
+PYTHON_INTERPRETER = python3
+
 all: fig2 fig3 fig4 fig5 fig6 fig7 fig8
 
 regression: models/logistic_regression_model.pkl
