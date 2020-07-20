@@ -1,82 +1,25 @@
-mp_identification
+Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.
 ==============================
 
 Data and analysis for Knopp, Benjamin, Dmytro Velychko, Johannes Dreibrodt, and Dominik Endres. 2019. “Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.” ACM Trans. Appl. Percept. 16 (3): 15:1–15:18. https://doi.org/10.1145/3355401.
 
-How to use this module
-----
+
+The raw data is stored in directory `data/raw`. Please replicate the computing environment
+using conda in an Unix-like operating system. Use the Makefile to process the raw data
+through intermediate results into plots shown in the publication. The preprocessing is
+slightly different, therefore the results will differ in an insignificantly.
+
 1. Make sure to replicate the python environment using conda:
 
     `conda env create -f environment.lock.yaml --force`
     `conda activate mp_perception2`
+    `pip install -e .`
 
-2. Make dataset from raw data
-    1. `src/data/make_dataset.py exp1 data/raw data/interim`
-    2. `src/data/make_dataset.py exp2 data/raw data/interim`
-    3. `src/data/make_dataset.py scores1 data/raw data/interim`
-    4. `src/data/make_dataset.py scores2 data/raw data/interim`
-    5. `src/data/make_dataset.py join data/interim data/processed`
+2. Run `make all`. This will take a while (~15min on a fast computer). You can also 
+    run processing scripts separately. Please refer to the `Makefile` to check dependencies
+    of the processing, training, and visualization scripts.
 
-3. (optional) Setup jupyter notebook: If you have installed jupyter notebook (or lab)
-    you can use ipykernel to make the virtual environment accessible:
-    `python -m ipykernel install --user --name mp_perception2`
-    or install jupyter notebook in the environment.
-    `TODO`
-
-Raw Data
-----
-
-Project Organization
-------------
-
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
-
---------
-
+If you have trouble executing these steps, please contact me: benjamin.knopp@uni-marburg.de.
 
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
