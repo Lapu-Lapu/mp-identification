@@ -1,5 +1,5 @@
 import pandas as pd
-from src.models.globs import pp
+from src.models.globs import pp, beta_std
 from src.data.make_dataset import model_id
 
 D = pd.read_json('data/processed/joint_results.json')
@@ -36,8 +36,12 @@ for i, k in enumerate(exp):
     scr.loc[scr.model_id == 'mapgpdm', 'model_id'] = 'map_gpdm'
     scr.loc[scr.model_id == 'mapcgpdm', 'model_id'] = 'map_cgpdm'
     scr = scr.set_index('model_id', verify_integrity=True)
-    cf = D[D.expName==k].groupby('model_id').y.mean()
-    scr = pd.concat([scr, cf.rename('confusion_rate')], axis=1, join='inner')
+    gb = D[D.expName==k].groupby('model_id')
+    cf = gb.y.mean()
+    std = gb.y.apply(beta_std)
+    scr = pd.concat(
+        [scr, cf.rename('confusion_rate'), std.rename('std')],
+        axis=1, join='inner')
     scores_exp += [scr]
 scores = pd.concat(scores_exp, sort=False).reset_index()
 scores.to_json('data/processed/joint_scores.json')

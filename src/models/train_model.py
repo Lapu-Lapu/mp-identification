@@ -99,10 +99,12 @@ if __name__ == '__main__':
     Df = pd.read_json('data/processed/preprocessed_data.json')
 
     results = {}
-    mp_types = ['tmp', 'dmp', 'vgpdm', 'vcgpdm']
+    mp_types = ['all', 'tmp', 'dmp', 'vgpdm', 'vcgpdm']
+    model['all'] = {}
+    model['all']['scores'] = ['MSE']
     for mp_type in mp_types:
         mp = model[mp_type]
-        df = Df[Df.mp_type == mp_type]
+        df = Df[Df.mp_type == mp_type] if mp_type != 'all' else Df
 
         for score in mp['scores']:
             print('++++', mp_type, score, ':', end=' ')

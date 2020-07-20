@@ -25,6 +25,11 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
+
+environment:
+	conda env create -f environment.lock.yaml --force
+	conda activate mp_perception2
+
 all: fig2 fig3 fig4 fig5 fig6 fig7 fig8
 
 regression: models/logistic_regression_model.pkl
@@ -84,7 +89,8 @@ data: data/processed/preprocessed_data.json data/processed/joint_scores.json
 data/processed/joint_scores.json: data/processed/joint_results.json
 	$(PYTHON_INTERPRETER) src/data/process_data.py
 
-data/processed/preprocessed_data.json: data/processed/joint_results.json
+data/processed/preprocessed_data.json: data/processed/joint_results.json\
+	src/data/process_data.py
 	$(PYTHON_INTERPRETER) src/data/process_data.py
 
 join: data/processed/joint_results.json
