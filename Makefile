@@ -25,14 +25,13 @@ requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
-all: fig2 fig3 fig4 fig5# fig6
+all: fig2 fig3 fig4 fig5 fig6
 
 regression: models/logistic_regression_model.pkl
 
 models/logistic_regression_model.pkl:\
 	src/models/train_model.py\
-	models/logistic_regression_model_raw.pkl\
-	models/logistic_regression_model.pkl
+	data/processed/preprocessed_data.json
 	$(PYTHON_INTERPRETER) src/models/train_model.py
 
 fig2: reports/figures/fig2.pdf
@@ -41,14 +40,14 @@ fig3: reports/figures/fig3.pdf
 
 fig4: reports/figures/fig4.pdf
 
-fig5: reports/figures/fig5.pdf models/logistic_regression_model.pkl
+fig5: reports/figures/fig5.pdf
 
-fig6: reports/figures/fig6.pdf models/logistic_regression_model.pkl
+fig6: reports/figures/fig6.pdf
 
 reports/figures/fig6.pdf: data/processed/preprocessed_data.json\
 	data/processed/joint_scores.json\
 	models/logistic_regression_model.pkl
-	$(PYTHON_INTERPRETER) src/visualization/make_fig5.py
+	$(PYTHON_INTERPRETER) src/visualization/make_fig6.py
 
 reports/figures/fig5.pdf: data/processed/preprocessed_data.json\
 	data/processed/joint_scores.json\
