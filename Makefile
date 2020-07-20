@@ -44,6 +44,11 @@ fig5: reports/figures/fig5.pdf
 
 fig6: reports/figures/fig6.pdf
 
+fig8: reports/figures/fig8.pdf
+
+reports/figures/fig8.pdf: data/processed/preprocessed_data.json
+	$(PYTHON_INTERPRETER) src/visualization/make_fig8.py
+
 reports/figures/fig6.pdf: data/processed/preprocessed_data.json\
 	data/processed/joint_scores.json\
 	models/logistic_regression_model.pkl

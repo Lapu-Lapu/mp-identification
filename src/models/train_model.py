@@ -101,21 +101,18 @@ if __name__ == '__main__':
     results = {}
     mp_types = ['tmp', 'dmp', 'vgpdm', 'vcgpdm']
     for mp_type in mp_types:
-        print('+++++')
-        print(mp_type)
-        print('+++++')
         mp = model[mp_type]
         df = Df[Df.mp_type == mp_type]
 
         for score in mp['scores']:
-            print('++++', mp_type, score, '++++')
+            print('++++', mp_type, score, ':', end=' ')
             score_min = df[score].values.min()
             score_max = df[score].values.max()
 
             X = transform_input(df, score=score)
 
             X[:, 1] = 2*((X[:, 1]-score_min)/(score_max-score_min)-0.5)
-            print(len(X), 'Datapoints')
+            print(len(X), 'Datapoints ++++')
 
             # # Cross validations
             # choose number of blocks
