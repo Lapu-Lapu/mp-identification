@@ -95,72 +95,73 @@ def transform_input(D, score='ELBO'):
     return D
 
 
-Df = pd.read_json('data/processed/preprocessed_data.json')
+if __name__ == '__main__':
+    Df = pd.read_json('data/processed/preprocessed_data.json')
 
-results = {}
-mp_types = ['tmp', 'dmp', 'vgpdm', 'vcgpdm']
-for mp_type in mp_types:
-    print('+++++')
-    print(mp_type)
-    print('+++++')
-    mp = model[mp_type]
-    df = Df[Df.mp_type == mp_type]
+    results = {}
+    mp_types = ['tmp', 'dmp', 'vgpdm', 'vcgpdm']
+    for mp_type in mp_types:
+        print('+++++')
+        print(mp_type)
+        print('+++++')
+        mp = model[mp_type]
+        df = Df[Df.mp_type == mp_type]
 
-    for score in mp['scores']:
-        print('++++', mp_type, score, '++++')
-        score_min = df[score].values.min()
-        score_max = df[score].values.max()
+        for score in mp['scores']:
+            print('++++', mp_type, score, '++++')
+            score_min = df[score].values.min()
+            score_max = df[score].values.max()
 
-        X = transform_input(df, score=score)
+            X = transform_input(df, score=score)
 
-        X[:, 1] = 2*((X[:, 1]-score_min)/(score_max-score_min)-0.5)
-        print(len(X), 'Datapoints')
+            X[:, 1] = 2*((X[:, 1]-score_min)/(score_max-score_min)-0.5)
+            print(len(X), 'Datapoints')
 
-        # # Cross validations
-        # choose number of blocks
-        possible_n = compute_complete_splits(len(X))
-        try:
-            n_blocks = possible_n[3]
-        except IndexError:
-            print('possible n for crossvalidation:', possible_n)
-            n_blocks = possible_n[0]
-        # compute cv-scores for constant prediction
-        fit_res_const, test_costs_const = crossvalidate(X, n_blocks,
-                                                        const=True)
+            # # Cross validations
+            # choose number of blocks
+            possible_n = compute_complete_splits(len(X))
+            try:
+                n_blocks = possible_n[3]
+            except IndexError:
+                print('possible n for crossvalidation:', possible_n)
+                n_blocks = possible_n[0]
+            # compute cv-scores for constant prediction
+            fit_res_const, test_costs_const = crossvalidate(X, n_blocks,
+                                                            const=True)
 
-        fit_cost_const = [f['fun'] for f in fit_res_const]
-        mus = [f['x'] for f in fit_res_const]
-        # compute cv-scores with score-regressor
-        fit_res, test_costs = crossvalidate(X, n_blocks)
-        fit_costs = [f.fun for f in fit_res]
-        ws = [f.x for f in fit_res]
+            fit_cost_const = [f['fun'] for f in fit_res_const]
+            mus = [f['x'] for f in fit_res_const]
+            # compute cv-scores with score-regressor
+            fit_res, test_costs = crossvalidate(X, n_blocks)
+            fit_costs = [f.fun for f in fit_res]
+            ws = [f.x for f in fit_res]
 
-        # Save result
-        for i in range(len(fit_costs)):
-            res = {'residual_cost': fit_costs[i],
-                    'test_cost': test_costs[i],
-                    'residual_cost_const': fit_cost_const[i],
-                    'test_cost_const': test_costs_const[i],
-                    'mu': mus[i],
-                    'N': len(X)}
-            for j in range(len(ws[i])):
-                res[f'w{j}'] = ws[i][j]
-            results[(mp_type, score, i)] = res
+            # Save result
+            for i in range(len(fit_costs)):
+                res = {'residual_cost': fit_costs[i],
+                        'test_cost': test_costs[i],
+                        'residual_cost_const': fit_cost_const[i],
+                        'test_cost_const': test_costs_const[i],
+                        'mu': mus[i],
+                        'N': len(X)}
+                for j in range(len(ws[i])):
+                    res[f'w{j}'] = ws[i][j]
+                results[(mp_type, score, i)] = res
 
 
-raw_results = pd.DataFrame(results).T
-raw_results.index = raw_results.index.set_names(['mp_type', 'score', 'n'])
-raw_results.to_pickle('models/logistic_regression_model_raw.pkl')
+    raw_results = pd.DataFrame(results).T
+    raw_results.index = raw_results.index.set_names(['mp_type', 'score', 'n'])
+    raw_results.to_pickle('models/logistic_regression_model_raw.pkl')
 
-# aggregate over crossvalidations
-group = raw_results.groupby(level=['mp_type', 'score'])
-results = group.mean()
-N_crossval = group.apply(len)
-N_crossval.name = 'blocks'
-results = pd.concat((results, N_crossval), axis=1)
+    # aggregate over crossvalidations
+    group = raw_results.groupby(level=['mp_type', 'score'])
+    results = group.mean()
+    N_crossval = group.apply(len)
+    N_crossval.name = 'blocks'
+    results = pd.concat((results, N_crossval), axis=1)
 
-# compute logk = N_{Trials}*(llh_{test}(w^\star)-llh_{test}(w_0=mean))
-results = results.assign(llr_vconst=lambda df:
-                         df.N*(-df.test_cost+df.test_cost_const))
+    # compute logk = N_{Trials}*(llh_{test}(w^\star)-llh_{test}(w_0=mean))
+    results = results.assign(llr_vconst=lambda df:
+                             df.N*(-df.test_cost+df.test_cost_const))
 
-results.to_pickle('models/logistic_regression_model.pkl')
+    results.to_pickle('models/logistic_regression_model.pkl')
