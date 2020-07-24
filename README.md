@@ -1,8 +1,15 @@
 Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models
 ==============================
 
-Data and analysis for Knopp, Benjamin, Dmytro Velychko, Johannes Dreibrodt, and Dominik Endres. 2019. “Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.” ACM Trans. Appl. Percept. 16 (3): 15:1–15:18. https://doi.org/10.1145/3355401.
+Dataset and analysis software associated with the following publication:
 
+[1] Knopp, Benjamin, Dmytro Velychko, Johannes Dreibrodt, and Dominik Endres. 2019. “Predicting Perceived Naturalness of Human Animations Based on Generative Movement Primitive Models.” ACM Trans. Appl. Percept. 16 (3): 15:1–15:18. https://doi.org/10.1145/3355401.
+
+## Requirements:
+- Python distribution [`Anaconda or Miniconda`](https://docs.conda.io/en/latest/miniconda.html)
+- `Unix-like OS` (tested on Ubuntu 16.04, Arch Linux, OpenSUSE)
+
+## Instructions
 
 The raw data is stored in directory `data/raw`. Please replicate the computing environment
 using conda in an Unix-like operating system. Use the Makefile to process the raw data
@@ -11,9 +18,9 @@ slightly different, therefore the results will differ in an insignificantly.
 
 1. Make sure to replicate the python environment using conda:
 
-    `conda env create -f environment.lock.yaml --force`
-    `conda activate mp_perception2`
-    `pip install -e .`
+    - `conda env create -f environment.lock.yaml --force`
+    - `conda activate mp_perception2`
+    - `pip install -e .`
 
 2. Run `make all`. This will take a while (~15min on a fast computer). You can also 
     run processing scripts separately. Please refer to the `Makefile` to check dependencies
